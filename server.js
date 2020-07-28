@@ -15,7 +15,19 @@ app.use((req ,res, next)=>{
 })
 
 app.get('/test', (req, res, next)=>{
-    res.status(202).send({message:'worked'})
+    // const error = new Error('error message')
+    // error.data = {errorData:'xyz'}
+    // error.statusCode = 403
+    // throw error
+    res.status(202).json({message:'wordfgsdgked'})
+})
+
+app.use((error, req, res, next)=>{
+    console.log(error)
+    const status = error.statusCode || 500
+    const message = error.message
+    const data = error.data
+    res.status(status).json({error: message, data})
 })
 
 mongoose.connect(process.env.DB_URL,{
