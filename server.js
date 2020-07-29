@@ -22,6 +22,8 @@ app.get('/test', (req, res, next)=>{
     res.status(202).json({message:'wordfgsdgked'})
 })
 
+app.use(require('./routes/feed'))
+
 app.use((error, req, res, next)=>{
     console.log(error)
     const status = error.statusCode || 500
