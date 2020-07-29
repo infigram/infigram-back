@@ -43,3 +43,6 @@ mongoose.connect(process.env.DB_URL,{
         console.log(`app running on port ${port}`)
     })
 })
+.catch((e)=>{
+    console.log(e)
+})
