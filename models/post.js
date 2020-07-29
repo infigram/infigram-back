@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
     title:{
@@ -13,8 +13,8 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-},{timestamps: true})
+},{timestamps: true});
 
-module.exports = mongoose.model('Post', postSchema)
+module.exports = mongoose.model('Post', postSchema);
 
 //To do - add imageUrl , connect with user model
