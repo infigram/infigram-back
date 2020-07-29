@@ -1,3 +1,5 @@
+const {validationResult} = require('express-validator')
+
 const Post = require('../models/post')
 
 exports.getPosts = async(req, res, next)=>{
@@ -9,11 +11,19 @@ exports.getPosts = async(req, res, next)=>{
             error.statusCode = 500
         }
         error.message = 'unable to fetch posts'
-        next(error)
+        return next(error)
     }
 }
 
 exports.createPost = async(req, res, next)=>{
+
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        const error = new Error('Validation failed')
+        error.statusCode = 422
+        return next(error)
+    }
+
     const title = req.body.title
     const content = req.body.content
     const username = req.user.username
@@ -30,6 +40,6 @@ exports.createPost = async(req, res, next)=>{
             error.statusCode = 500
         }
         error.message = 'post not created'
-        next(error)
+        return next(error)
     }
 }
