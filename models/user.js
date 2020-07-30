@@ -5,6 +5,7 @@ const { encryptPassword } = require('../helpers/bcrypt');
 //User schema
 const UserSchema = new mongoose.Schema(
     {
+        //User's email unique
         email: {
             type: String,
             required: true,
@@ -12,24 +13,29 @@ const UserSchema = new mongoose.Schema(
             //Unique email
             unique: true
         },
+        //User's password
         password: {
             type: String,
             required: true
         },
+        //User's username
         username: {
             type: String,
             required: false
         },
+        //User's image url - profile etc
         imageUrl: {
             type: String
         },
+        //User's name
         name: {
             type: String
         },
+        //User status
         status: {
             type: String,
-            enum: ['busy', 'active', 'offline']
         },
+        //User posts
         posts: [
             {
                 type: mongoose.Schema.Types.ObjectId,
