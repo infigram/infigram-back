@@ -32,6 +32,7 @@ app.get('/test', (req, res, next)=>{
 })
 
 app.use(require('./routes/feed'))
+app.use(require('./routes/user'))
 
 app.use((error, req, res, next)=>{
     console.log(error)

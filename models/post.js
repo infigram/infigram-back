@@ -1,19 +1,24 @@
 const mongoose = require('mongoose');
 
+//Post schema
 const postSchema = new mongoose.Schema({
-    title:{
+    title: {
         type: String,
         required: true
     },
-    content:{
+    content: {
         type: String,
         required: true
     },
-    username:{
+    imageUrl: {
         type: String,
-        required: true
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        //required: true
     }
-},{timestamps: true});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Post', postSchema);
 
