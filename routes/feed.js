@@ -6,7 +6,7 @@ const isAuth = require('../middleware/is-auth')
 const router = require('express').Router()
 
 //Get all the posts
-router.get('/posts', isAuth, feedController.getPosts)
+router.get('/posts', feedController.getPosts)
 
 //Post
 router.post('/post', isAuth,

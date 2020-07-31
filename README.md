@@ -2,9 +2,9 @@ api for social app
 
 ## To do - 
 - [x] add express validator
-- [ ] add dummy mongodb user
+- [x] add dummy mongodb user
 - [ ] add authentication
 - [ ] add authorization
 
 ### bugs -
-- [ ] mongoose passwordEncrypt middleware not working (commented out)
+- mongoose passwordEncrypt middleware not working (commented out)
