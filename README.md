@@ -1,5 +1,8 @@
 api for social app
 
+# API endpoints
+`to be added`
+
 ## To do - 
 - [x] add express validator
 - [x] add dummy mongodb user
@@ -7,4 +10,4 @@ api for social app
 - [ ] add authorization
 
 ### bugs -
-- mongoose passwordEncrypt middleware not working (commented out)
+- ~~mongoose passwordEncrypt middleware not working~~
