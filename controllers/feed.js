@@ -1,7 +1,15 @@
+//Require validator
 const {validationResult} = require('express-validator')
 
+//Require post
 const Post = require('../models/post')
 
+/**
+ * Get all posts
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 exports.getPosts = async(req, res, next)=>{
     try {
         const posts = await Post.find();
@@ -15,6 +23,12 @@ exports.getPosts = async(req, res, next)=>{
     }
 }
 
+/**
+ * Create post
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 exports.createPost = async(req, res, next)=>{
 
     const errors = validationResult(req);
