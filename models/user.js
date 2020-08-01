@@ -51,14 +51,12 @@ UserSchema.plugin(mongooseUniqueValidator);
 /**
  * Encrypt password 
  */
-UserSchema.pre('save', (next) => {
-    var user = this;
-
+UserSchema.pre('save', function(next) {
+    const user = this;
     // only hash the password if it has been modified (or is new)
-    if (!user.isModified('password')) return next();
-
-    user.password = encryptPassword(user.password);
-
+    if (user.isModified('password')){
+        user.password = encryptPassword(user.password);
+    }
     next();
 })
 

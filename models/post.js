@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
     imageUrl: {
         type: String,
     },
-    user: {
+    creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         //required: true

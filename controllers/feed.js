@@ -3,6 +3,7 @@ const {validationResult} = require('express-validator')
 
 //Require post
 const Post = require('../models/post')
+const User = require('../models/user')
 
 /**
  * Get all posts
@@ -18,7 +19,7 @@ exports.getPosts = async(req, res, next)=>{
         if(!error.statusCode){
             error.statusCode = 500;
         }
-        error.message = 'unable to fetch posts';
+        error.data = 'unable to fetch posts';
         return next(error);
     }
 }
@@ -37,21 +38,23 @@ exports.createPost = async(req, res, next)=>{
         error.statusCode = 422;
         return next(error);
     }
-    //Destructuring
-    const { title, content, username } = req.body;
+    const { title, content } = req.body;
     const post = new Post({
         title,
         content,
-        username
+        creator: req.userId
     })
     try {
         const savedPost = await post.save();
+        const user = await User.findById(req.userId)
+        user.posts.push(post)
+        await user.save()
         res.status(201).json({message: 'post saved', post: savedPost});
     } catch (error) {
         if(!error.statusCode){
             error.statusCode = 500;
         }
-        error.message = 'post not created';
+        error.data = 'post not created';
         return next(error);
     }
 }
