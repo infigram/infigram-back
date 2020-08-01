@@ -10,7 +10,7 @@ const router = require('express').Router()
 router.get('/posts', feedController.getPosts)
 
 //Post
-router.post('/post', isAuth, imageUpload,
+router.post('/post', isAuth, imageUpload.single('image'),
     [
         body('title')
             .trim()

@@ -18,4 +18,4 @@ const fileFilter = (req, file, cb)=>{
   }
 }
 
-module.exports = multer({storage: fileStorage, fileFilter: fileFilter}).single('image')
+module.exports = multer({storage: fileStorage, fileFilter: fileFilter})
