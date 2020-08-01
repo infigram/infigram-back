@@ -31,7 +31,7 @@ exports.getPosts = async(req, res, next)=>{
  * @param {*} next 
  */
 exports.createPost = async(req, res, next)=>{
-
+    //use req.fileAddress (console.log it first)
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         const error = new Error('Validation failed');

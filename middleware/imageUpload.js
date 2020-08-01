@@ -14,12 +14,14 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'posts',
     format: async (req, file) => 'png', // supports promises as well
-    public_id: (req, file) => uuid.v1(),
+    public_id: (req, file) => req.fileAddress,
   },
 });
 
 const fileFilter = (req, file, cb)=>{
-  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+  if (file.mimetype === 'image/png' ||
+      file.mimetype === 'image/jpg' ||
+      file.mimetype === 'image/jpeg') {
       cb(null, true)
   } else {
       cb(null, false)
