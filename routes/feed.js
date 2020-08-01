@@ -2,6 +2,7 @@ const {body} = require('express-validator')
 
 const feedController = require('../controllers/feed')
 const isAuth = require('../middleware/is-auth')
+const imageUpload = require('../middleware/imageUpload')
 
 const router = require('express').Router()
 
@@ -9,7 +10,7 @@ const router = require('express').Router()
 router.get('/posts', feedController.getPosts)
 
 //Post
-router.post('/post', isAuth,
+router.post('/post', isAuth, imageUpload,
     [
         body('title')
             .trim()
