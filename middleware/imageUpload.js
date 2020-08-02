@@ -1,4 +1,5 @@
 const multer = require('multer')
+/*
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
@@ -7,7 +8,8 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY, 
   api_secret: process.env.CLOUDINARY_API_SECRET 
 });
-
+*/
+/*
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -16,6 +18,17 @@ const storage = new CloudinaryStorage({
     public_id: (req, file) => req.fileAddress,
   },
 });
+*/
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function(req, file, cb) {
+    console.log(file)
+    cb(null, file.originalname)
+  }
+})
 
 const fileFilter = (req, file, cb)=>{
   if (file.mimetype === 'image/png' ||

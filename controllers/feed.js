@@ -1,5 +1,14 @@
 //Require validator
-const {validationResult} = require('express-validator')
+const { validationResult } = require('express-validator')
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const fs = require('fs')
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 //Require post
 const Post = require('../models/post')
@@ -11,12 +20,12 @@ const User = require('../models/user')
  * @param {*} res 
  * @param {*} next 
  */
-exports.getPosts = async(req, res, next)=>{
+exports.getPosts = async (req, res, next) => {
     try {
         const posts = await Post.find();
         res.status(200).json(posts);
     } catch (error) {
-        if(!error.statusCode){
+        if (!error.statusCode) {
             error.statusCode = 500;
         }
         error.data = 'unable to fetch posts';
@@ -30,30 +39,45 @@ exports.getPosts = async(req, res, next)=>{
  * @param {*} res 
  * @param {*} next 
  */
-exports.createPost = async(req, res, next)=>{
+exports.createPost = async (req, res, next) => {
     //use req.fileAddress (console.log it first)
+    const { path } = req.file || '';
     const errors = validationResult(req);
-    if(!errors.isEmpty()){
+    if (!errors.isEmpty()) {
         const error = new Error('Validation failed');
         error.statusCode = 422;
+        fs.unlinkSync(path);
         return next(error);
     }
-    const { title, content } = req.body;
-    const { path } = req.file || '';
-    const post = new Post({
-        title,
-        content,
-        imageUrl: path,
-        creator: req.userId
-    })
+
     try {
-        const savedPost = await post.save();
-        const user = await User.findById(req.userId)
-        user.posts.push(post)
-        await user.save()
-        res.status(201).json({message: 'post saved', post: savedPost});
+        await cloudinary.uploader.upload(
+            path,
+            { public_id: `posts/${req.fileAddress}`, tags: `posts` }, // directory and tags are optional
+            async (err, image) => {
+                if (err) return res.send(err)
+                console.log('file uploaded to Cloudinary')
+                // remove file from server
+                fs.unlinkSync(path)
+                // return image details
+                const { title, content } = req.body;
+                const post = new Post({
+                    title,
+                    content,
+                    imageUrl: image.url,
+                    creator: req.userId
+                })
+                const savedPost = await post.save();
+                const user = await User.findById(req.userId)
+                user.posts.push(post)
+                await user.save()
+
+                res.status(201).json({ message: 'post saved', post: savedPost });
+            }
+        )
+
     } catch (error) {
-        if(!error.statusCode){
+        if (!error.statusCode) {
             error.statusCode = 500;
         }
         error.data = 'post not created';
@@ -61,12 +85,12 @@ exports.createPost = async(req, res, next)=>{
     }
 }
 
-module.exports.deleteAllPosts = async (req,  res, next) => {
+module.exports.deleteAllPosts = async (req, res, next) => {
     try {
         const posts = await Post.remove({});
         res.status(200).json(posts);
     } catch (error) {
-        if(!error.statusCode){
+        if (!error.statusCode) {
             error.statusCode = 500;
         }
         error.data = 'unable to fetch posts';
