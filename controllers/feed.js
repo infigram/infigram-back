@@ -51,6 +51,7 @@ exports.createPost = async (req, res, next) => {
     }
 
     try {
+        //Using cloudinary to upload file
         await cloudinary.uploader.upload(
             path,
             { public_id: `posts/${req.fileAddress}`, tags: `posts` }, // directory and tags are optional
@@ -64,6 +65,7 @@ exports.createPost = async (req, res, next) => {
                 const post = new Post({
                     title,
                     content,
+                    //Get the image url
                     imageUrl: image.url,
                     creator: req.userId
                 })
