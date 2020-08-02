@@ -5,6 +5,7 @@ const isAuth = require('../middleware/is-auth')
 const imageUpload = require('../middleware/imageUpload')
 const uuid = require('uuid')
 
+
 const router = require('express').Router()
 
 //Get all the posts
@@ -24,5 +25,8 @@ router.post('/post',
                 .isLength({min:5}),
         ],
         feedController.createPost)
+
+//Delete all posts
+router.delete('/posts', feedController.deleteAllPosts)
 
 module.exports = router

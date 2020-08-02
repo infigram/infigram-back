@@ -39,9 +39,11 @@ exports.createPost = async(req, res, next)=>{
         return next(error);
     }
     const { title, content } = req.body;
+    const { path } = req.file || '';
     const post = new Post({
         title,
         content,
+        imageUrl: path,
         creator: req.userId
     })
     try {
@@ -55,6 +57,19 @@ exports.createPost = async(req, res, next)=>{
             error.statusCode = 500;
         }
         error.data = 'post not created';
+        return next(error);
+    }
+}
+
+module.exports.deleteAllPosts = async (req,  res, next) => {
+    try {
+        const posts = await Post.remove({});
+        res.status(200).json(posts);
+    } catch (error) {
+        if(!error.statusCode){
+            error.statusCode = 500;
+        }
+        error.data = 'unable to fetch posts';
         return next(error);
     }
 }
