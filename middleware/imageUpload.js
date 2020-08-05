@@ -16,8 +16,10 @@ const storage = new CloudinaryStorage({
     folder: 'posts',
     format: async (req, file) => 'png', // supports promises as well
     public_id: (req, file) => req.fileAddress,
+    secure: true,
     transformation: [
       {width: 400, gravity: "face", crop: "fill"},
+      {quality: "auto", fetch_format: "auto"},
       {width: 400}
     ]
   },
