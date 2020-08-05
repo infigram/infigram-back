@@ -1,6 +1,7 @@
 const multer = require('multer')
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const validator = require('validator')
 
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -18,11 +19,26 @@ const storage = new CloudinaryStorage({
 });
 
 const fileFilter = (req, file, cb)=>{
-  if (file.mimetype === 'image/png' ||
+
+  req.body.title = req.body.title.trim()
+  req.body.content = req.body.content.trim()
+
+  const validationErrors = []
+  if(!validator.isLength((req.body.title),{min:5})){
+    validationErrors.push('invalid title body')
+  }
+  if(!validator.isLength((req.body.content),{min:5})){
+    validationErrors.push('invalid content body')
+  }
+  req.validationErrors = validationErrors
+
+  if ((file.mimetype === 'image/png' ||
       file.mimetype === 'image/jpg' ||
-      file.mimetype === 'image/jpeg') {
-      cb(null, true)
+      file.mimetype === 'image/jpeg') &&
+      validationErrors.length === 0) {
+        cb(null, true)
   } else {
+
       cb(null, false)
   }
 }

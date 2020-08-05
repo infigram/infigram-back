@@ -16,14 +16,6 @@ router.post('/post',
          isAuth,
         ((req, res, next)=>{req.fileAddress= `${req.userId}/${uuid.v1()}`; next()}),
         imageUpload.single('image'),
-        [
-            body('title')
-                .trim()
-                .isLength({min:5}),
-            body('content')
-                .trim()
-                .isLength({min:5}),
-        ],
         feedController.createPost)
 
 //Delete all posts

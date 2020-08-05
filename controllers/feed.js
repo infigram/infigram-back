@@ -1,6 +1,3 @@
-//Require validator
-const {validationResult} = require('express-validator')
-
 //Require post
 const Post = require('../models/post')
 const User = require('../models/user')
@@ -31,11 +28,11 @@ exports.getPosts = async(req, res, next)=>{
  * @param {*} next 
  */
 exports.createPost = async(req, res, next)=>{
-    //use req.fileAddress (console.log it first)
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
+    const errors = req.validationErrors
+    if(errors.length !== 0){
         const error = new Error('Validation failed');
         error.statusCode = 422;
+        error.data = errors
         return next(error);
     }
     const { title, content } = req.body;
