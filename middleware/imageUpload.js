@@ -16,7 +16,12 @@ const storage = new CloudinaryStorage({
     folder: 'posts',
     format: async (req, file) => 'png', // supports promises as well
     public_id: (req, file) => req.fileAddress,
+    transformation: [
+      {width: 400, gravity: "face", crop: "fill"},
+      {width: 400}
+    ]
   },
+
 });
 
 const fileFilter = (req, file, cb)=>{
@@ -35,7 +40,7 @@ const fileFilter = (req, file, cb)=>{
 
   if ((file.mimetype === 'image/png' ||
       file.mimetype === 'image/jpg' ||
-      file.mimetype === 'image/jpeg') &&
+      file.mimetype === 'image/jpeg') && 
       validationErrors.length === 0) {
         cb(null, true)
   } else {
@@ -44,4 +49,4 @@ const fileFilter = (req, file, cb)=>{
   }
 }
 
-module.exports = multer({storage: storage, fileFilter: fileFilter})
+module.exports = multer({storage: storage, fileFilter: fileFilter,limits: {fileSize: 1024 * 1024 * 10}})
