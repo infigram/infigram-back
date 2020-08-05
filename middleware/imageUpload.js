@@ -2,6 +2,7 @@ const multer = require('multer')
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const validator = require('validator')
+const uuid = require('uuid')
 
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -19,7 +20,7 @@ const storage = new CloudinaryStorage({
 });
 
 const fileFilter = (req, file, cb)=>{
-
+  req.fileAddress= `${req.userId}/${uuid.v1()}`
   req.body.title = req.body.title.trim()
   req.body.content = req.body.content.trim()
 
