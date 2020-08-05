@@ -20,7 +20,7 @@ const storage = new CloudinaryStorage({
     transformation: [
       {width: 400, gravity: "face", crop: "fill"},
       {quality: "auto", fetch_format: "auto"},
-      {width: 400}
+      {width: 400, crop: "scale"}
     ]
   },
 
