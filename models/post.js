@@ -2,17 +2,21 @@ const mongoose = require('mongoose');
 
 //Post schema
 const postSchema = new mongoose.Schema({
+    //Title
     title: {
         type: String,
         required: true
     },
+    //Content
     content: {
         type: String,
         required: true
     },
+    //Image url store in cloudinary
     imageUrl: {
         type: String,
     },
+    // Create of the post ( user )
     creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
