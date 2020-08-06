@@ -1,7 +1,7 @@
-const {body} = require('express-validator')
-
 const feedController = require('../controllers/feed')
 const isAuth = require('../middleware/is-auth')
+const imageUpload = require('../middleware/imageUpload')
+
 
 const router = require('express').Router()
 
@@ -9,15 +9,12 @@ const router = require('express').Router()
 router.get('/posts', feedController.getPosts)
 
 //Post
-router.post('/post', isAuth,
-    [
-        body('title')
-            .trim()
-            .isLength({min:5}),
-        body('content')
-            .trim()
-            .isLength({min:5}),
-    ],
-    feedController.createPost)
+router.post('/post',
+         isAuth,
+        imageUpload.single('image'),
+        feedController.createPost)
+
+//Delete all posts
+router.delete('/posts', feedController.deleteAllPosts)
 
 module.exports = router

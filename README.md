@@ -6,6 +6,7 @@ api for social app
 ## To do - 
 - [x] add express validator
 - [x] add dummy mongodb user
+- [x] fix multer middleware to be used after express-validator
 - [ ] add authentication
 - [ ] add authorization
 
