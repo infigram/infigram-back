@@ -14,14 +14,14 @@ exports.getPosts = async(req, res, next)=>{
     if (page<1){
         page=1
     }
-    console.log(page)
     try {
         const posts = await Post
                             .find()
                             .sort({'createdAt':-1})
                             .skip((page-1)*postsPerPage)
                             .limit(postsPerPage)
-        res.status(200).json(posts);
+        const jsonResponse = {posts, page}
+        res.status(200).json(jsonResponse);
     } catch (error) {
         if(!error.statusCode){
             error.statusCode = 500;
