@@ -9,8 +9,18 @@ const User = require('../models/user')
  * @param {*} next 
  */
 exports.getPosts = async(req, res, next)=>{
+    const postsPerPage = 5
+    let page = Math.floor(Number(req.query.page)) || 1
+    if (page<1){
+        page=1
+    }
+    console.log(page)
     try {
-        const posts = await Post.find();
+        const posts = await Post
+                            .find()
+                            .sort({'createdAt':-1})
+                            .skip((page-1)*postsPerPage)
+                            .limit(postsPerPage)
         res.status(200).json(posts);
     } catch (error) {
         if(!error.statusCode){
