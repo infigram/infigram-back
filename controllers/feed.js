@@ -9,9 +9,19 @@ const User = require('../models/user')
  * @param {*} next 
  */
 exports.getPosts = async(req, res, next)=>{
+    const postsPerPage = 5
+    let page = Math.floor(Number(req.query.page)) || 1
+    if (page<1){
+        page=1
+    }
     try {
-        const posts = await Post.find();
-        res.status(200).json(posts);
+        const posts = await Post
+                            .find()
+                            .sort({'createdAt':-1})
+                            .skip((page-1)*postsPerPage)
+                            .limit(postsPerPage)
+        const jsonResponse = {posts, page}
+        res.status(200).json(jsonResponse);
     } catch (error) {
         if(!error.statusCode){
             error.statusCode = 500;
