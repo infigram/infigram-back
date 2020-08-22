@@ -68,6 +68,35 @@ exports.createPost = async(req, res, next)=>{
     }
 }
 
+module.exports.updatePostById = async (req,  res, next) => {
+    const errors = req.validationErrors
+    if(errors.length !== 0){
+        const error = new Error('Validation failed');
+        error.statusCode = 422;
+        error.data = errors
+        return next(error);
+    }
+    const { _id, title, content } = req.body;
+    const { path } = req.file;
+    await Post.findOne({_id: _id}, (err, post) =>{
+        if(err) res.status(402).json({message : "Error"});
+        post.title = title;
+        post.content = content;
+        if(path === undefined || path === null || path === ''){
+            post.save((err) => {
+                if(err) res.status(402).json({message : "Error"});
+            })
+        }
+        else{
+            post.imageUrl = path;
+            post.save((err) => {
+                if(err) res.status(402).json({message : "Error"});
+            })
+        }
+    })
+}
+
+
 module.exports.deleteAllPosts = async (req,  res, next) => {
     try {
         const posts = await Post.remove({});

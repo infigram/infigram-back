@@ -14,6 +14,13 @@ router.post('/post',
         imageUpload.single('image'),
         feedController.createPost)
 
+
+//Put
+router.put('/posts', feedController.updatePostById)
+
+//Patch
+router.patch('/posts', feedController.updatePostById)
+
 //Delete all posts
 router.delete('/posts', feedController.deleteAllPosts)
 
