@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
+//XSS Header
+const helmet = require('helmet');
 
 const app = express()
 
@@ -13,6 +14,9 @@ if (process.env.NODE_ENV == 'dev') {
 const {PORT,DB_URL} = process.env;
 
 const port = PORT || 5000;
+
+//Prevent XSS attack
+app.use(helmet());
 
 app.use(express.json());
 

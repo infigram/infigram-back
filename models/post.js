@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 //Post schema
 const postSchema = new mongoose.Schema({
@@ -21,8 +22,15 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         //required: true
+    },
+    public_id_cloudinary: {
+        type: String,
+        required: true,
+        unique: true
     }
 }, { timestamps: true });
+
+postSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Post', postSchema);
 
