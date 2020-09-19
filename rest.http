@@ -1,0 +1,7 @@
+GET http://localhost:3000/posts
+
+POST http://localhost:3000/signup
+{
+    "email": "minhquan.nguyen.fr@gmail.com",
+    "password": "abc"
+}

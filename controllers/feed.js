@@ -80,7 +80,6 @@ exports.create = async (req, res, next) => {
         content,
         imageUrl: path,
         creator: req.userId,
-        public_id_cloudinary: `posts/${req.fileAddress}`
     })
     try {
         const savedPost = await post.save();
@@ -110,6 +109,7 @@ module.exports.updateById = (req, res, next) => {
         error.statusCode = 422;
         error.data = errors
         return next(error);
+
     }
     const { _id, title, content } = req.body;
     const { path } = req.file;
@@ -117,13 +117,16 @@ module.exports.updateById = (req, res, next) => {
         if (err) res.status(500).json({ error: "Error" });
         if (post.public_id_cloudinary != path.fileAddress) {
             //Delete image in cloudinary if the public_id has changed
+            //Get the post public id
+            const n1 = post.imageUrl.indexOf("posts");
+            const n2 = post.imageUrl.indexOf(".", n1);
             cloudinary.uploader.destroy(
-                post.public_id_cloudinary
+                //Post public id
+                post.imageUrl.slice(n1, n2)
                 //uploadResult.public_id
             ).then((error, result) => {
                 post.title = title;
                 post.content = content;
-                post.public_id_cloudinary = path.fileAddress;
                 if (path === undefined || path === null || path === '') {
                     post.save((err) => {
                         if (err) res.status(500).json({ error: "Error" });
@@ -160,26 +163,28 @@ module.exports.updateById = (req, res, next) => {
  * @param {*} res 
  * @param {*} next 
  */
-module.exports.deleteById = (req, res, next) => {
+module.exports.deleteById = async (req, res, next) => {
     try {
         //Get the id from params
         const _id = req.params.id;
-        Post.findOne({ _id }).exec().then((err, post) => {
-            if(err) return res.status(500).json({error: err})
-            if(post === null || post === undefined) return res.status(404).json({error: 'No pist with this id'})
-            //Delete image in cloudinary
-            cloudinary.uploader.destroy(
-                post.public_id_cloudinary
-                //uploadResult.public_id
-            ).then((error, result) => {
-                //Delete the post after delete the image
-                Post.deleteOne({ _id }).then(() => {
-                    res.status(200).json({ message: "Post deleted" });
-                });
+        const post = await Post.findOne({ _id })
+        if (post === null || post === undefined) return res.status(404).json({ error: 'No post with this id' })
+        //Get the post public id
+        const n1 = post.imageUrl.indexOf("posts");
+        const n2 = post.imageUrl.indexOf(".", n1);
+        //Delete image in cloudinary
+        await cloudinary.uploader.destroy(
+            //post public id
+            post.imageUrl.slice(n1, n2)
+            //uploadResult.public_id
+        ).then((error, result) => {
+            //Delete the post after delete the image
+            Post.deleteOne({ _id }).then(() => {
+                res.status(204).json({ message: "Post deleted" });
             });
-        })
-
-    } catch (error) {
+        });
+    }
+    catch (error) {
         if (!error.statusCode) {
             error.statusCode = 500;
         }
@@ -194,23 +199,26 @@ module.exports.deleteById = (req, res, next) => {
  * @param {*} res 
  * @param {*} next 
  */
-module.exports.deleteAll = (req, res, next) => {
+module.exports.deleteAll = async (req, res, next) => {
     try {
-        Post.find({}).exec().then((err, posts) => {
-            if (err) res.status(500).json({ error: "Error" });
-            posts.forEach(post => {
-                cloudinary.uploader.destroy(
-                    post.public_id_cloudinary
-                    //uploadResult.public_id
-                ).then((error, result) => {
-                    //Delete the post after delete the image
-                    Post.deleteOne({ _id: post._id }).then(() => {
-                        res.status(200).json({ message: "Post deleted" });
-                    });
+        const posts = await Post.find({});
+
+        posts.forEach(async post => {
+            //Get the post public id
+            const n1 = post.imageUrl.indexOf("posts");
+            const n2 = post.imageUrl.indexOf(".", n1);
+            await cloudinary.uploader.destroy(
+                //post public id
+                post.imageUrl.slice(n1, n2)
+                //uploadResult.public_id
+            ).then((error, result) => {
+                //Delete the post after delete the image
+                Post.deleteMany({}).then(() => {
+                    return res.status(204).json({ message: "All Posts deleted" });
                 });
-            })
-        }
-        )
+            });
+        })
+
     } catch (error) {
         if (!error.statusCode) {
             error.statusCode = 500;

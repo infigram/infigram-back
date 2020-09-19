@@ -23,11 +23,6 @@ const postSchema = new mongoose.Schema({
         ref: 'User',
         //required: true
     },
-    public_id_cloudinary: {
-        type: String,
-        required: true,
-        unique: true
-    }
 }, { timestamps: true });
 
 postSchema.plugin(uniqueValidator);

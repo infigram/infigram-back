@@ -1,5 +1,5 @@
 const feedController = require('../controllers/feed');
-const isAuth = require('../middleware/is-auth');
+const { ensuredAuthenticated } = require('../middleware/is-auth');
 const imageUpload = require('../middleware/imageUpload');
 
 
@@ -14,7 +14,7 @@ router.get('/posts/:id', feedController.findById);
 
 //Post
 router.post('/posts',
-        isAuth,
+        ensuredAuthenticated,
         imageUpload.single('image'),
         feedController.create);
 
